@@ -8,6 +8,15 @@ using System.Drawing;
 
 namespace parus
 {
+    // Информация о значениях в файле ионограммы.
+    struct contentInfo {
+        public byte min_o;
+        public byte min_x;
+        public byte max_o;
+        public byte max_x;
+        public bool read_error;
+    } // contentInfo
+
     // Структура заголовка файла ионограммы.
     struct IonogramInfo2 {
         // GMT время получения ионограммы -----------------------------
@@ -67,15 +76,23 @@ namespace parus
     class IonogramReader
     {
         // Поля
+        private contentInfo _contentInfo; // информация о содержимом файла ионограммы
         private uint _ver; // номер версии формата ионограммы
         private IonogramInfo2 _header; // заголовок ионограммы
         private string _filename; // путь к файлу ионограммы
-        private Bitmap _image = null; // рисунок ионограммы
+        private Bitmap _image_o = null; // рисунок ионограммы o-след
+        private Bitmap _image_x = null; // рисунок ионограммы x-след
 
         // Свойства
         public string FileName { get { return _filename; } }
         public uint Version { get { return _ver; } }
         public IonogramInfo2 Header { get { return _header; } }
+        public Bitmap Bitmap_O { get { return _image_o; } }
+        public Bitmap Bitmap_X { get { return _image_x; } }
+
+        public string TimeString { get { 
+            return string(_header.tm_year+1900) + '-' + string(_header.tm_mon+1) + '-' + string(_header.tm_mday) + ' ' + string(_header.tm_hour) + ':' + string(_header.tm_min); 
+        } }
 
         // Методы
         public IonogramReader(string fname)
@@ -87,15 +104,17 @@ namespace parus
                 // создаем объект BinaryReader
                 using (BinaryReader reader = new BinaryReader(File.Open(fname, FileMode.Open)))
                 {
+                    _contentInfo = getContentInfo(reader);
                     _ver = reader.ReadUInt32();
                     switch (_ver)
                     {
                         case 0:
                             _header = readHeader2(reader);
-                            _image = new Bitmap(
+                            _image_o = new Bitmap(
                                 (int)_header.count_freq, 
                                 (int)_header.count_height, 
-                                System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                            _image_x = new Bitmap(_image_o);
                             fillImage(reader);
                             break;
                         default:
@@ -168,22 +187,165 @@ namespace parus
         {
             FrequencyData curFrq;
             SignalResponse curSignal;
-            int i;
+            int i, iFrq;
+            int df = (int)((_header.freq_max - _header.freq_min) / (_header.count_freq - 1));
             byte[] samples;
 
             // пока не достигнут конец файла считываем каждое значение из файла
             bool file_eof;
-            do
+            try
             {
-                curFrq = readFrequencyData(reader);
-                for (i = 0; i < curFrq.count_o; i++)
+                do
                 {
-                    curSignal = readSignalResponse(reader);
-                    samples = reader.ReadBytes(curSignal.count_samples);
+                    curFrq = readFrequencyData(reader);
+                    iFrq = (int)((curFrq.frequency - _header.freq_min) / df);
+                    for (i = 0; i < curFrq.count_o; i++) // о-отражения
+                    {
+                        curSignal = readSignalResponse(reader);
+                        samples = reader.ReadBytes(curSignal.count_samples);
+                        fillLine(curFrq, curSignal, samples, 0, iFrq);
+                    }
+                    for (i = 0; i < curFrq.count_x; i++) // о-отражения
+                    {
+                        curSignal = readSignalResponse(reader);
+                        samples = reader.ReadBytes(curSignal.count_samples);
+                        fillLine(curFrq, curSignal, samples, 1, iFrq);
+                    }
+                    file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
                 }
-                file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
+                while (!file_eof); // если возникает ошибка - файл битый
             }
-            while (!file_eof); // если возникает ошибка - файл битый
+            catch (IOException e)
+            {
+                ErrorMessage em = new ErrorMessage("Ошибка чтения файла ионограммы", e.Message);
+            }
+        }
+
+        protected void fillLine(FrequencyData curFrq, SignalResponse curSignal, byte[] samples, byte component, int i)
+        {
+            // component - 0 для о-компоненты, 1 для х-компоненты
+            // i - номер частоты (ось Х)
+            int j, j_beg, k;
+
+            if (!_contentInfo.read_error)
+            {
+                j_beg = (int)((curSignal.height_begin - _header.height_min) / _header.height_step); // j_beg - начальный номер высоты (ось Y) 
+                for (k = 0; k < curSignal.count_samples; k++)
+                {
+                    j = (int)_header.count_height - 1 - (j_beg + k);
+                    switch (component)
+                    {
+                        case 0: // красным рисуем о-компоненту
+                            _image_o.SetPixel(i, j, MapRainbowColor(samples[k], _contentInfo.max_o, _contentInfo.min_o));
+                            break;
+                        case 1: // зеленым рисуем х-компоненту
+                            _image_x.SetPixel(i, j, MapRainbowColor(samples[k], _contentInfo.max_o, _contentInfo.min_o));
+                            break;
+                    }
+                }
+            }
+        }
+
+        protected contentInfo getContentInfo(BinaryReader reader)
+        {
+            contentInfo _out;
+            _out.min_o = 255;
+            _out.min_x = 255;
+            _out.max_o = 0;
+            _out.max_x = 0;
+            _out.read_error = false;
+            // Сохраним положение в файле.
+            long oldPos = reader.BaseStream.Position;
+
+            try
+            {
+                // Читаем заголовок.
+                _ver = reader.ReadUInt32();
+                if (_ver == 0)
+                    _header = readHeader2(reader);
+                else
+                    throw new ArgumentOutOfRangeException("Неизвестная версия формата файла ионограмм.");
+
+                // Пробегаем по данным.
+                FrequencyData curFrq;
+                SignalResponse curSignal;
+                int i, k;
+                byte[] samples;
+
+                // пока не достигнут конец файла считываем каждое значение из файла
+                bool file_eof;
+                do
+                {
+                    curFrq = readFrequencyData(reader);
+                    for (i = 0; i < curFrq.count_o; i++) // о-отражения
+                    {
+                        curSignal = readSignalResponse(reader);
+                        samples = reader.ReadBytes(curSignal.count_samples);
+                        for (k = 0; k < curSignal.count_samples; k++)
+                        {
+                            _out.min_o = (_out.min_o < samples[k]) ? _out.min_o : samples[k];
+                            _out.max_o = (_out.max_o > samples[k]) ? _out.max_o : samples[k];
+                        }
+                    }
+                    for (i = 0; i < curFrq.count_x; i++) // о-отражения
+                    {
+                        curSignal = readSignalResponse(reader);
+                        samples = reader.ReadBytes(curSignal.count_samples);
+                        for (k = 0; k < curSignal.count_samples; k++)
+                        {
+                            _out.min_x = (_out.min_x < samples[k]) ? _out.min_x : samples[k];
+                            _out.max_x = (_out.max_x > samples[k]) ? _out.max_x : samples[k];
+                        }
+                    }
+                    file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
+                }
+                while (!file_eof); // если возникает ошибка - файл битый
+            }
+            catch (IOException e)
+            {
+                // Ошибку не обрабатываем. Что нашли в файле - то нашли.
+                _out.read_error = true;
+            }
+
+            // Возвратим исходное положение в файле.
+            reader.BaseStream.Seek(oldPos, SeekOrigin.Begin);
+
+            return _out;
+        }
+
+        // Map a value to a rainbow color.
+        // red_value - max bound, blue_value - min bound (или наоборот)
+        // value - между этими границами (реально от 0 до 255)
+        private Color MapRainbowColor(float value, float red_value = 255, float blue_value = 0)
+        {
+            // Convert into a value between 0 and 255.
+            int int_value = (int)(255 * (value - red_value) /
+                (blue_value - red_value));
+
+            // Map different color bands.
+            if (int_value < 64)
+            {
+                // Red to yellow. (255, 0, 0) to (255, 255, 0).
+                return Color.FromArgb(255, int_value, 0);
+            }
+            else if (int_value < 128)
+            {
+                // Yellow to green. (255, 255, 0) to (0, 255, 0).
+                int_value -= 64;
+                return Color.FromArgb(255 - int_value, 255, 0);
+            }
+            else if (int_value < 192)
+            {
+                // Green to aqua. (0, 255, 0) to (0, 255, 255).
+                int_value -= 128;
+                return Color.FromArgb(0, 255, int_value);
+            }
+            else
+            {
+                // Aqua to blue. (0, 255, 255) to (0, 0, 255).
+                int_value -= 192;
+                return Color.FromArgb(0, 255 - int_value, 255);
+            }
         }
     }
 }

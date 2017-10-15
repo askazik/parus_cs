@@ -6,11 +6,15 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Drawing.Drawing2D;
 
 namespace parus
 {
     public partial class FormMain : Form
     {
+        IonogramReader curIonogram = null; // информация о текущей ионограмме
+
         public FormMain()
         {
             InitializeComponent();
@@ -70,14 +74,39 @@ namespace parus
 
         private void chartIonogram_Paint(object sender, PaintEventArgs e)
         {
+            string ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\";
+            if (curIonogram == null)
+            {
+                ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\" + this.listBoxIonograms.Items[0].ToString();
+                curIonogram = new IonogramReader(ionname);
+            }
 
+            //Point loc = chartIonogram.Location;
+            //Size siz = chartIonogram.Size;
+            //Padding mar = chartIonogram.Margin;
+            //ElementPosition posChart = chartIonogram.ChartAreas[0].InnerPlotPosition;
+            //e.Graphics.DrawImage(curIonogram.Bitmap_O, mar.Left + loc.X + siz.Width * posChart.X/100, mar.Top + loc.Y + siz.Height * posChart.Y/100);
+
+            ChartArea a = chartIonogram.ChartAreas[0];
+            int x1 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Minimum) + a.AxisX.LineWidth;
+            int x2 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Maximum) - a.AxisX.LineWidth;
+            int y1 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Maximum) + a.AxisY.LineWidth;
+            int y2 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Minimum) - a.AxisY.LineWidth;
+
+            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+            if (curIonogram.Bitmap_O != null)
+                e.Graphics.DrawImage(curIonogram.Bitmap_O, new Rectangle(x1, y1, x2-x1, y2-y1));
         }
 
-        private void listBoxIonograms_Click(object sender, EventArgs e)
+        private void listBoxIonograms_SelectedValueChanged(object sender, EventArgs e)
         {
             ListBox listbox = (ListBox)sender;
             string ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\" + listbox.SelectedItem.ToString();
-            IonogramReader curIonogram = new IonogramReader(ionname);
+            curIonogram = new IonogramReader(ionname);
+
+            chartIonogram.Invalidate();
+
+            chartIonogram.Titles["TitleTimeIonogram"].Text = chartIonogram.TimeString;
         }
     }
 }

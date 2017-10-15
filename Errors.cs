@@ -8,8 +8,8 @@ namespace parus
         public ErrorMessage(string caption, string message)
         {
             // Displays the MessageBox.
-            DialogResult result = MessageBox.Show(message, caption, MessageBoxButtons.OK);
-            if (result == DialogResult.OK)
+            DialogResult result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 Application.Exit();
             }

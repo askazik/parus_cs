@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace parus
 {
@@ -17,6 +18,8 @@ namespace parus
             listBoxIonograms.Items.Clear();
             for (int i = 0; i < FI.Length; ++i)
                 listBoxIonograms.Items.Add(FI[i].Name);
+            listBoxIonograms.SelectedIndex = 0;
+            listBoxIonograms.Focus();
         }
     }
 }

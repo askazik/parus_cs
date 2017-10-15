@@ -36,6 +36,7 @@
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint4 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(3D, 2D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint5 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(4D, 1D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint6 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(5D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageIonogram = new System.Windows.Forms.TabPage();
@@ -93,14 +94,16 @@
             // 
             // chartIonogram
             // 
+            chartArea1.AxisX.Title = "Частота, МГц";
+            chartArea1.AxisY.Title = "Действующая высота, км";
             chartArea1.Name = "ChartArea1";
             this.chartIonogram.ChartAreas.Add(chartArea1);
             this.chartIonogram.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartIonogram.Location = new System.Drawing.Point(3, 3);
             this.chartIonogram.Name = "chartIonogram";
             series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
-            series1.Color = System.Drawing.Color.Red;
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series1.Color = System.Drawing.Color.Transparent;
             series1.Name = "Series1";
             series1.Points.Add(dataPoint1);
             series1.Points.Add(dataPoint2);
@@ -112,6 +115,9 @@
             this.chartIonogram.Size = new System.Drawing.Size(596, 354);
             this.chartIonogram.TabIndex = 5;
             this.chartIonogram.Text = "chart1";
+            title1.Name = "TitleTimeIonogram";
+            this.chartIonogram.Titles.Add(title1);
+            this.chartIonogram.Paint += new System.Windows.Forms.PaintEventHandler(this.chartIonogram_Paint);
             // 
             // panelIonogramFiles
             // 
@@ -132,7 +138,7 @@
             this.listBoxIonograms.Name = "listBoxIonograms";
             this.listBoxIonograms.Size = new System.Drawing.Size(188, 341);
             this.listBoxIonograms.TabIndex = 1;
-            this.listBoxIonograms.Click += new System.EventHandler(this.listBoxIonograms_Click);
+            this.listBoxIonograms.SelectedValueChanged += new System.EventHandler(this.listBoxIonograms_SelectedValueChanged);
             // 
             // label1
             // 
