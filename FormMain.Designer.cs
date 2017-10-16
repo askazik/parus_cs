@@ -68,9 +68,9 @@
             // 
             // tabControl
             // 
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.Controls.Add(this.tabPageIonogram);
             this.tabControl.Controls.Add(this.tabPageParameters);
             this.tabControl.Location = new System.Drawing.Point(0, 24);
@@ -94,14 +94,20 @@
             // 
             // chartIonogram
             // 
+            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             chartArea1.AxisX.Title = "Частота, МГц";
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
+            chartArea1.AxisX2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             chartArea1.AxisY.Title = "Действующая высота, км";
-            chartArea1.Name = "ChartArea1";
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
+            chartArea1.AxisY2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.Name = "ChartAreaIonogram";
             this.chartIonogram.ChartAreas.Add(chartArea1);
             this.chartIonogram.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartIonogram.Location = new System.Drawing.Point(3, 3);
             this.chartIonogram.Name = "chartIonogram";
-            series1.ChartArea = "ChartArea1";
+            series1.ChartArea = "ChartAreaIonogram";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
             series1.Color = System.Drawing.Color.Transparent;
             series1.Name = "Series1";
@@ -115,6 +121,7 @@
             this.chartIonogram.Size = new System.Drawing.Size(596, 354);
             this.chartIonogram.TabIndex = 5;
             this.chartIonogram.Text = "chart1";
+            title1.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             title1.Name = "TitleTimeIonogram";
             this.chartIonogram.Titles.Add(title1);
             this.chartIonogram.Paint += new System.Windows.Forms.PaintEventHandler(this.chartIonogram_Paint);

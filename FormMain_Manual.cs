@@ -10,16 +10,27 @@ namespace parus
     public partial class FormMain : Form
     {
         // Заполнение списка выбора именами ионограмм.
-        private void fill_listboxIonograms(object sender)
+        private void fill_listboxIonograms()
         {
             System.IO.DirectoryInfo DI = new System.IO.DirectoryInfo(Properties.Settings.Default.settingsWorkingDirectory);
             System.IO.FileInfo[] FI = DI.GetFiles("*.ion");
 
-            listBoxIonograms.Items.Clear();
-            for (int i = 0; i < FI.Length; ++i)
-                listBoxIonograms.Items.Add(FI[i].Name);
-            listBoxIonograms.SelectedIndex = 0;
-            listBoxIonograms.Focus();
+            if (FI.Length > 0)
+            {
+                listBoxIonograms.Items.Clear();
+                for (int i = 0; i < FI.Length; ++i)
+                    listBoxIonograms.Items.Add(FI[i].Name);
+                listBoxIonograms.SelectedIndex = 0;
+                listBoxIonograms.Focus();
+            }
+            else
+            {
+                DialogResult result = MessageBox.Show(this, "В выбранной папке отсутствуют файлы ионограмм. Выберите другую папку.", "Поиск рабочей папки", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                if (result == DialogResult.OK)
+                {
+                    this.toolStripMenuItemOpenDir_Click(null, null);
+                }
+            }
         }
     }
 }

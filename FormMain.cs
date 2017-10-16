@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing.Drawing2D;
+using System.IO;
 
 namespace parus
 {
@@ -43,7 +44,7 @@ namespace parus
             Properties.Settings.Default.Save();
 
             toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
-            fill_listboxIonograms(sender);
+            fill_listboxIonograms();
         }
 
         private void toolStripMenuItemOpenFile_Click(object sender, EventArgs e)
@@ -68,34 +69,43 @@ namespace parus
 
         private void FormMain_Activated(object sender, EventArgs e)
         {
-            toolStripStatusLabelDirectory.Text = "Папка: " + Properties.Settings.Default.settingsWorkingDirectory;
-            fill_listboxIonograms(sender);
+            if (Directory.Exists(Properties.Settings.Default.settingsWorkingDirectory))
+            {
+                toolStripStatusLabelDirectory.Text = "Папка: " + Properties.Settings.Default.settingsWorkingDirectory;
+                fill_listboxIonograms();
+            }
+            else
+                toolStripMenuItemOpenDir_Click(sender, e);
         }
 
         private void chartIonogram_Paint(object sender, PaintEventArgs e)
         {
-            string ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\";
-            if (curIonogram == null)
+            if (listBoxIonograms.Items.Count > 0)
             {
-                ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\" + this.listBoxIonograms.Items[0].ToString();
-                curIonogram = new IonogramReader(ionname);
+                string ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\";
+
+                if (curIonogram == null)
+                {
+                    ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\" + this.listBoxIonograms.Items[0].ToString();
+                    curIonogram = new IonogramReader(ionname);
+                }
+
+                //Point loc = chartIonogram.Location;
+                //Size siz = chartIonogram.Size;
+                //Padding mar = chartIonogram.Margin;
+                //ElementPosition posChart = chartIonogram.ChartAreas[0].InnerPlotPosition;
+                //e.Graphics.DrawImage(curIonogram.Bitmap_O, mar.Left + loc.X + siz.Width * posChart.X/100, mar.Top + loc.Y + siz.Height * posChart.Y/100);
+
+                ChartArea a = chartIonogram.ChartAreas[0];
+                int x1 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Minimum) + a.AxisX.LineWidth;
+                int x2 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Maximum) - a.AxisX.LineWidth;
+                int y1 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Maximum) + a.AxisY.LineWidth;
+                int y2 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Minimum) - a.AxisY.LineWidth;
+
+                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                if (curIonogram.Bitmap_O != null)
+                    e.Graphics.DrawImage(curIonogram.Bitmap_O, new Rectangle(x1, y1, x2 - x1, y2 - y1));
             }
-
-            //Point loc = chartIonogram.Location;
-            //Size siz = chartIonogram.Size;
-            //Padding mar = chartIonogram.Margin;
-            //ElementPosition posChart = chartIonogram.ChartAreas[0].InnerPlotPosition;
-            //e.Graphics.DrawImage(curIonogram.Bitmap_O, mar.Left + loc.X + siz.Width * posChart.X/100, mar.Top + loc.Y + siz.Height * posChart.Y/100);
-
-            ChartArea a = chartIonogram.ChartAreas[0];
-            int x1 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Minimum) + a.AxisX.LineWidth;
-            int x2 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Maximum) - a.AxisX.LineWidth;
-            int y1 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Maximum) + a.AxisY.LineWidth;
-            int y2 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Minimum) - a.AxisY.LineWidth;
-
-            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-            if (curIonogram.Bitmap_O != null)
-                e.Graphics.DrawImage(curIonogram.Bitmap_O, new Rectangle(x1, y1, x2-x1, y2-y1));
         }
 
         private void listBoxIonograms_SelectedValueChanged(object sender, EventArgs e)
@@ -106,7 +116,15 @@ namespace parus
 
             chartIonogram.Invalidate();
 
-            chartIonogram.Titles["TitleTimeIonogram"].Text = chartIonogram.TimeString;
-        }
+            chartIonogram.Titles["TitleTimeIonogram"].Text = curIonogram.TimeString;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Minimum = curIonogram.Header.freq_min/1000;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Maximum = curIonogram.Header.freq_max/1000;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Interval = 1;
+
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Minimum = (int)(curIonogram.Header.height_min/1000);
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Maximum = (int)(curIonogram.Header.height_min +
+                curIonogram.Header.height_step * (curIonogram.Header.count_height-1))/1000;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Interval = 100;
+         }
     }
 }
