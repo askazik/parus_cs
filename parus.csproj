@@ -73,9 +73,6 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Errors.cs" />
-    <Compile Include="FormMain_Manual.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="IonogramWork.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>

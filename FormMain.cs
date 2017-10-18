@@ -38,12 +38,36 @@ namespace parus
             // Update the working directory if the user clicks OK 
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 curDir = folderBrowserDialog.SelectedPath;
-            
-            Properties.Settings.Default.settingsWorkingDirectory = curDir;
-            Properties.Settings.Default.Save();
+            // Попробуем поменять путь
+            if (fill_listboxIonograms(sender)) // при наличие файлов ионограмм в указанной папке
+            {
+                Properties.Settings.Default.settingsWorkingDirectory = curDir;
+                Properties.Settings.Default.Save();
+                toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
+            }
+            else
+                new ErrorMessage("Отсутствуют ионограммы!", 
+                    "В выбранной папке " + curDir + " отсутствуют файлы ионограмм *.ion. Выберите для работы другую папку!");
+        }
 
-            toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
-            fill_listboxIonograms(sender);
+        // Заполнение списка выбора именами ионограмм.
+        private bool fill_listboxIonograms(object sender)
+        {
+            bool key = false;
+            System.IO.DirectoryInfo DI = new System.IO.DirectoryInfo(Properties.Settings.Default.settingsWorkingDirectory);
+            System.IO.FileInfo[] FI = DI.GetFiles("*.ion");
+
+            if (FI.Length > 0)
+            {
+                listBoxIonograms.Items.Clear();
+                for (int i = 0; i < FI.Length; ++i)
+                    listBoxIonograms.Items.Add(FI[i].Name);
+                listBoxIonograms.SelectedIndex = 0;
+                listBoxIonograms.Focus();
+                key = true;
+            }
+
+            return key;
         }
 
         private void toolStripMenuItemOpenFile_Click(object sender, EventArgs e)
