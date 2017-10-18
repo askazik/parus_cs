@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace parus
 {
@@ -91,7 +92,8 @@ namespace parus
         public Bitmap Bitmap_X { get { return _image_x; } }
 
         public string TimeString { get { 
-            return string(_header.tm_year+1900) + '-' + string(_header.tm_mon+1) + '-' + string(_header.tm_mday) + ' ' + string(_header.tm_hour) + ':' + string(_header.tm_min); 
+            return (_header.tm_year+1900).ToString() + '-' + (_header.tm_mon+1).ToString("D2") + '-' +
+                (_header.tm_mday).ToString("D2") + ' ' + (_header.tm_hour).ToString("D2") + ':' + (_header.tm_min).ToString("D2") + " UT"; 
         } }
 
         // Методы
@@ -125,7 +127,7 @@ namespace parus
             catch (Exception e)
             {
                 string caption = "Ошибка при чтении файла " + this._filename + '.';
-                ErrorMessage eb = new ErrorMessage(caption, e.Message);
+                DialogResult result = MessageBox.Show(e.Message, caption, MessageBoxButtons.OK);
             }
         }
 
@@ -217,7 +219,8 @@ namespace parus
             }
             catch (IOException e)
             {
-                ErrorMessage em = new ErrorMessage("Ошибка чтения файла ионограммы", e.Message);
+                string caption = "Ошибка чтения файла ионограммы";
+                DialogResult result = MessageBox.Show(e.Message, caption, MessageBoxButtons.OK);
             }
         }
 

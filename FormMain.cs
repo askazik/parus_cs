@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing.Drawing2D;
+using System.IO;
 
 namespace parus
 {
@@ -38,23 +39,21 @@ namespace parus
             // Update the working directory if the user clicks OK 
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 curDir = folderBrowserDialog.SelectedPath;
+
             // Попробуем поменять путь
-            if (fill_listboxIonograms(sender)) // при наличие файлов ионограмм в указанной папке
+            if (fill_listboxIonograms(curDir))
             {
                 Properties.Settings.Default.settingsWorkingDirectory = curDir;
                 Properties.Settings.Default.Save();
                 toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
             }
-            else
-                new ErrorMessage("Отсутствуют ионограммы!", 
-                    "В выбранной папке " + curDir + " отсутствуют файлы ионограмм *.ion. Выберите для работы другую папку!");
         }
 
         // Заполнение списка выбора именами ионограмм.
-        private bool fill_listboxIonograms(object sender)
+        private bool fill_listboxIonograms(string curDir)
         {
             bool key = false;
-            System.IO.DirectoryInfo DI = new System.IO.DirectoryInfo(Properties.Settings.Default.settingsWorkingDirectory);
+            System.IO.DirectoryInfo DI = new System.IO.DirectoryInfo(curDir);
             System.IO.FileInfo[] FI = DI.GetFiles("*.ion");
 
             if (FI.Length > 0)
@@ -66,7 +65,14 @@ namespace parus
                 listBoxIonograms.Focus();
                 key = true;
             }
-
+            else
+            {
+                // Displays the MessageBox.
+                DialogResult result = MessageBox.Show(
+                    "В выбранной папке " + Properties.Settings.Default.settingsWorkingDirectory + 
+                    " отсутствуют файлы ионограмм *.ion. Выберите для работы другую папку!",
+                    "Отсутствуют ионограммы!", MessageBoxButtons.OK);
+            }
             return key;
         }
 
@@ -92,34 +98,37 @@ namespace parus
 
         private void FormMain_Activated(object sender, EventArgs e)
         {
-            toolStripStatusLabelDirectory.Text = "Папка: " + Properties.Settings.Default.settingsWorkingDirectory;
-            fill_listboxIonograms(sender);
+
         }
 
         private void chartIonogram_Paint(object sender, PaintEventArgs e)
         {
-            string ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\";
-            if (curIonogram == null)
+            if (listBoxIonograms.Items.Count > 0)
             {
-                ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\" + this.listBoxIonograms.Items[0].ToString();
-                curIonogram = new IonogramReader(ionname);
+                string ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\";
+
+                if (curIonogram == null)
+                {
+                    ionname = Properties.Settings.Default.settingsWorkingDirectory + "\\" + this.listBoxIonograms.Items[0].ToString();
+                    curIonogram = new IonogramReader(ionname);
+                }
+
+                //Point loc = chartIonogram.Location;
+                //Size siz = chartIonogram.Size;
+                //Padding mar = chartIonogram.Margin;
+                //ElementPosition posChart = chartIonogram.ChartAreas[0].InnerPlotPosition;
+                //e.Graphics.DrawImage(curIonogram.Bitmap_O, mar.Left + loc.X + siz.Width * posChart.X/100, mar.Top + loc.Y + siz.Height * posChart.Y/100);
+
+                ChartArea a = chartIonogram.ChartAreas[0];
+                int x1 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Minimum) + a.AxisX.LineWidth;
+                int x2 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Maximum) - a.AxisX.LineWidth;
+                int y1 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Maximum) + a.AxisY.LineWidth;
+                int y2 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Minimum) - a.AxisY.LineWidth;
+
+                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                if (curIonogram.Bitmap_O != null)
+                    e.Graphics.DrawImage(curIonogram.Bitmap_O, new Rectangle(x1, y1, x2 - x1, y2 - y1));
             }
-
-            //Point loc = chartIonogram.Location;
-            //Size siz = chartIonogram.Size;
-            //Padding mar = chartIonogram.Margin;
-            //ElementPosition posChart = chartIonogram.ChartAreas[0].InnerPlotPosition;
-            //e.Graphics.DrawImage(curIonogram.Bitmap_O, mar.Left + loc.X + siz.Width * posChart.X/100, mar.Top + loc.Y + siz.Height * posChart.Y/100);
-
-            ChartArea a = chartIonogram.ChartAreas[0];
-            int x1 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Minimum) + a.AxisX.LineWidth;
-            int x2 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Maximum) - a.AxisX.LineWidth;
-            int y1 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Maximum) + a.AxisY.LineWidth;
-            int y2 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Minimum) - a.AxisY.LineWidth;
-
-            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-            if (curIonogram.Bitmap_O != null)
-                e.Graphics.DrawImage(curIonogram.Bitmap_O, new Rectangle(x1, y1, x2-x1, y2-y1));
         }
 
         private void listBoxIonograms_SelectedValueChanged(object sender, EventArgs e)
@@ -130,7 +139,29 @@ namespace parus
 
             chartIonogram.Invalidate();
 
-            chartIonogram.Titles["TitleTimeIonogram"].Text = chartIonogram.TimeString;
+            chartIonogram.Titles["TitleTimeIonogram"].Text = curIonogram.TimeString;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Minimum = curIonogram.Header.freq_min/1000;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Maximum = curIonogram.Header.freq_max/1000;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Interval = 1;
+
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Minimum = (int)(curIonogram.Header.height_min/1000);
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Maximum = (int)(curIonogram.Header.height_min +
+                curIonogram.Header.height_step * (curIonogram.Header.count_height-1))/1000;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Interval = 100;
+         }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            string curDir = Properties.Settings.Default.settingsWorkingDirectory;
+            if (Directory.Exists(curDir))
+                if (fill_listboxIonograms(curDir)) // попробуем заполнить список ионограмм
+                {
+                    Properties.Settings.Default.settingsWorkingDirectory = curDir;
+                    Properties.Settings.Default.Save();
+                    toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
+                }
+            else
+                toolStripMenuItemOpenDir_Click(sender, e); // попробуем сразу сменить папку
         }
     }
 }
