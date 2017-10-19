@@ -41,39 +41,35 @@ namespace parus
                 curDir = folderBrowserDialog.SelectedPath;
 
             // Попробуем поменять путь
-            if (fill_listboxIonograms(curDir))
-            {
-                Properties.Settings.Default.settingsWorkingDirectory = curDir;
-                Properties.Settings.Default.Save();
-                toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
-            }
+            fill_listboxIonograms(curDir);
         }
 
         // Заполнение списка выбора именами ионограмм.
-        private bool fill_listboxIonograms(string curDir)
+        private void fill_listboxIonograms(string curDir)
         {
-            bool key = false;
             System.IO.DirectoryInfo DI = new System.IO.DirectoryInfo(curDir);
             System.IO.FileInfo[] FI = DI.GetFiles("*.ion");
 
             if (FI.Length > 0)
             {
+                Properties.Settings.Default.settingsWorkingDirectory = curDir;
+                Properties.Settings.Default.Save();
+                toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
+
                 listBoxIonograms.Items.Clear();
                 for (int i = 0; i < FI.Length; ++i)
                     listBoxIonograms.Items.Add(FI[i].Name);
                 listBoxIonograms.SelectedIndex = 0;
                 listBoxIonograms.Focus();
-                key = true;
             }
             else
             {
                 // Displays the MessageBox.
                 DialogResult result = MessageBox.Show(
-                    "В выбранной папке " + Properties.Settings.Default.settingsWorkingDirectory + 
+                    "В выбранной папке " + curDir + 
                     " отсутствуют файлы ионограмм *.ion. Выберите для работы другую папку!",
                     "Отсутствуют ионограммы!", MessageBoxButtons.OK);
             }
-            return key;
         }
 
         private void toolStripMenuItemOpenFile_Click(object sender, EventArgs e)
@@ -154,14 +150,7 @@ namespace parus
         {
             string curDir = Properties.Settings.Default.settingsWorkingDirectory;
             if (Directory.Exists(curDir))
-                if (fill_listboxIonograms(curDir)) // попробуем заполнить список ионограмм
-                {
-                    Properties.Settings.Default.settingsWorkingDirectory = curDir;
-                    Properties.Settings.Default.Save();
-                    toolStripStatusLabelDirectory.Text = "Папка :" + curDir;
-                }
-            else
-                toolStripMenuItemOpenDir_Click(sender, e); // попробуем сразу сменить папку
+                fill_listboxIonograms(curDir); // попробуем заполнить список ионограмм
         }
     }
 }
