@@ -116,6 +116,18 @@ namespace parus
                                 (int)_header.count_freq, 
                                 (int)_header.count_height, 
                                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                            // тест границ
+                            //using (Graphics gr = Graphics.FromImage(_image_o))
+                            //{
+                            //    GraphicsUnit unit = GraphicsUnit.Pixel;
+                            //    RectangleF rec = _image_o.GetBounds(ref unit);
+                            //    gr.DrawRectangle(
+                            //        new Pen(Color.Red),
+                            //        0,0,
+                            //        (int)_header.count_freq,
+                            //        (int)_header.count_height);
+                            //}
+
                             _image_x = new Bitmap(_image_o);
                             fillImage(reader);
                             break;
