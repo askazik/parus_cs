@@ -59,7 +59,7 @@ namespace parus
                 listBoxIonograms.Items.Clear();
                 for (int i = 0; i < FI.Length; ++i)
                     listBoxIonograms.Items.Add(FI[i].Name);
-                listBoxIonograms.SelectedIndex = 0;
+                listBoxIonograms.SelectedIndex = listBoxIonograms.Items.Count-1;
                 listBoxIonograms.Focus();
             }
             else
@@ -136,14 +136,14 @@ namespace parus
             chartIonogram.Invalidate();
 
             chartIonogram.Titles["TitleTimeIonogram"].Text = curIonogram.TimeString;
-            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Minimum = curIonogram.Header.freq_min/1000;
-            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Maximum = curIonogram.Header.freq_max/1000;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Minimum = curIonogram.Header.freq_min/1000.0;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Maximum = curIonogram.Header.freq_max/1000.0;
             chartIonogram.ChartAreas["ChartAreaIonogram"].AxisX.Interval = 1;
 
-            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Minimum = (int)(curIonogram.Header.height_min/1000);
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Minimum = (int)(curIonogram.Header.height_min/1000.0);
             chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Maximum = (int)(curIonogram.Header.height_min +
-                curIonogram.Header.height_step * (curIonogram.Header.count_height-1))/1000;
-            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Interval = 100;
+                curIonogram.Header.height_step * (curIonogram.Header.count_height-1))/1000.0;
+            chartIonogram.ChartAreas["ChartAreaIonogram"].AxisY.Interval = 100.0;
          }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -152,5 +152,19 @@ namespace parus
             if (Directory.Exists(curDir))
                 fill_listboxIonograms(curDir); // попробуем заполнить список ионограмм
         }
+
+        private void toolStripButtonChangeDir_Click(object sender, EventArgs e)
+        {
+            toolStripMenuItemOpenDir_Click(sender, e);
+        }
+
+        private void toolStripButtonRefresh_Click(object sender, EventArgs e)
+        {
+            string curDir = Properties.Settings.Default.settingsWorkingDirectory;
+
+            // Попробуем поменять путь
+            fill_listboxIonograms(curDir);
+        }
+
     }
 }

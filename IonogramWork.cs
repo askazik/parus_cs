@@ -11,10 +11,10 @@ namespace parus
 {
     // Информация о значениях в файле ионограммы.
     struct contentInfo {
-        public byte min_o;
-        public byte min_x;
-        public byte max_o;
-        public byte max_x;
+        public int min_o;
+        public int min_x;
+        public int max_o;
+        public int max_x;
         public bool read_error;
     } // contentInfo
 
@@ -78,7 +78,7 @@ namespace parus
     {
         // Поля
         private contentInfo _contentInfo; // информация о содержимом файла ионограммы
-        private uint _ver; // номер версии формата ионограммы
+        private uint _ver; // номер версии формата ионограммы 0 - ИПГ, 1 - интенсивности без обработки, 2 - CDF
         private IonogramInfo2 _header; // заголовок ионограммы
         private string _filename; // путь к файлу ионограммы
         private Bitmap _image_o = null; // рисунок ионограммы o-след
@@ -110,26 +110,23 @@ namespace parus
                     _ver = reader.ReadUInt32();
                     switch (_ver)
                     {
-                        case 0:
+                        case 0: // ИПГ
                             _header = readHeader2(reader);
                             _image_o = new Bitmap(
                                 (int)_header.count_freq, 
                                 (int)_header.count_height, 
                                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                            // тест границ
-                            //using (Graphics gr = Graphics.FromImage(_image_o))
-                            //{
-                            //    GraphicsUnit unit = GraphicsUnit.Pixel;
-                            //    RectangleF rec = _image_o.GetBounds(ref unit);
-                            //    gr.DrawRectangle(
-                            //        new Pen(Color.Red),
-                            //        0,0,
-                            //        (int)_header.count_freq,
-                            //        (int)_header.count_height);
-                            //}
-
                             _image_x = new Bitmap(_image_o);
                             fillImage(reader);
+                            break;
+                        case 1: // грязная ионограмма as is
+                            _header = readHeader2(reader);
+                            _image_o = new Bitmap(
+                                (int)_header.count_freq,
+                                (int)_header.count_height,
+                                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                            fillDirtyImage(reader);
+                            _image_x = new Bitmap(_image_o); // дублируем рисунок
                             break;
                         default:
                             throw new ArgumentOutOfRangeException("Неизвестная версия формата файла ионограмм.");
@@ -219,12 +216,46 @@ namespace parus
                         samples = reader.ReadBytes(curSignal.count_samples);
                         fillLine(curFrq, curSignal, samples, 0, iFrq);
                     }
-                    for (i = 0; i < curFrq.count_x; i++) // о-отражения
+                    for (i = 0; i < curFrq.count_x; i++) // x-отражения
                     {
                         curSignal = readSignalResponse(reader);
                         samples = reader.ReadBytes(curSignal.count_samples);
                         fillLine(curFrq, curSignal, samples, 1, iFrq);
                     }
+                    file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
+                }
+                while (!file_eof); // если возникает ошибка - файл битый
+            }
+            catch (IOException e)
+            {
+                string caption = "Ошибка чтения файла ионограммы";
+                DialogResult result = MessageBox.Show(e.Message, caption, MessageBoxButtons.OK);
+            }
+        }
+
+        protected void fillDirtyImage(BinaryReader reader)
+        {
+            int i, j;
+            uint sample;
+            // ushort sample;
+            Color cl;
+
+            // пока не достигнут конец файла считываем каждое значение из файла
+            bool file_eof;
+            i = 0;
+            try
+            {
+                do
+                {
+                    for (j = 0; j < _header.count_height; j++)
+                    {
+                        sample = reader.ReadUInt32();
+                        // sample = reader.ReadUInt16();
+                        cl = MapRainbowColor(sample, _contentInfo.max_o, _contentInfo.min_o);
+                        _image_o.SetPixel(i, (int)_header.count_height - 1 - j, cl);
+                    }
+
+                    i++;
                     file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
                 }
                 while (!file_eof); // если возникает ошибка - файл битый
@@ -254,7 +285,7 @@ namespace parus
                             _image_o.SetPixel(i, j, MapRainbowColor(samples[k], _contentInfo.max_o, _contentInfo.min_o));
                             break;
                         case 1: // зеленым рисуем х-компоненту
-                            _image_x.SetPixel(i, j, MapRainbowColor(samples[k], _contentInfo.max_o, _contentInfo.min_o));
+                            _image_x.SetPixel(i, j, MapRainbowColor(samples[k], _contentInfo.max_x, _contentInfo.min_x));
                             break;
                     }
                 }
@@ -276,45 +307,70 @@ namespace parus
             {
                 // Читаем заголовок.
                 _ver = reader.ReadUInt32();
-                if (_ver == 0)
+                if (_ver >= 0 && _ver <=2)
                     _header = readHeader2(reader);
                 else
                     throw new ArgumentOutOfRangeException("Неизвестная версия формата файла ионограмм.");
-
-                // Пробегаем по данным.
-                FrequencyData curFrq;
-                SignalResponse curSignal;
-                int i, k;
-                byte[] samples;
-
-                // пока не достигнут конец файла считываем каждое значение из файла
-                bool file_eof;
-                do
+                    
+                bool file_eof = false;
+                switch(_ver) 
                 {
-                    curFrq = readFrequencyData(reader);
-                    for (i = 0; i < curFrq.count_o; i++) // о-отражения
+                    case 0: // ИПГ
+                    // Пробегаем по данным.
+                    FrequencyData curFrq;
+                    SignalResponse curSignal;
+                    int i, k;
+                    byte[] samples;
+
+                    // пока не достигнут конец файла считываем каждое значение из файла
+
+                    do
                     {
-                        curSignal = readSignalResponse(reader);
-                        samples = reader.ReadBytes(curSignal.count_samples);
-                        for (k = 0; k < curSignal.count_samples; k++)
+                        curFrq = readFrequencyData(reader);
+                        for (i = 0; i < curFrq.count_o; i++) // о-отражения
                         {
-                            _out.min_o = (_out.min_o < samples[k]) ? _out.min_o : samples[k];
-                            _out.max_o = (_out.max_o > samples[k]) ? _out.max_o : samples[k];
+                            curSignal = readSignalResponse(reader);
+                            samples = reader.ReadBytes(curSignal.count_samples);
+                            for (k = 0; k < curSignal.count_samples; k++)
+                            {
+                                _out.min_o = (_out.min_o < samples[k]) ? _out.min_o : samples[k];
+                                _out.max_o = (_out.max_o > samples[k]) ? _out.max_o : samples[k];
+                            }
                         }
+                        for (i = 0; i < curFrq.count_x; i++) // о-отражения
+                        {
+                            curSignal = readSignalResponse(reader);
+                            samples = reader.ReadBytes(curSignal.count_samples);
+                            for (k = 0; k < curSignal.count_samples; k++)
+                            {
+                                _out.min_x = (_out.min_x < samples[k]) ? _out.min_x : samples[k];
+                                _out.max_x = (_out.max_x > samples[k]) ? _out.max_x : samples[k];
+                            }
+                        }
+                        file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
                     }
-                    for (i = 0; i < curFrq.count_x; i++) // о-отражения
+                    while (!file_eof); // если возникает ошибка - файл битый
+                    break;
+
+                    case 1: // грязная ионограмма
+                    
+                    int sample;
+                    // пока не достигнут конец файла считываем каждое значение из файла
+                    do
                     {
-                        curSignal = readSignalResponse(reader);
-                        samples = reader.ReadBytes(curSignal.count_samples);
-                        for (k = 0; k < curSignal.count_samples; k++)
-                        {
-                            _out.min_x = (_out.min_x < samples[k]) ? _out.min_x : samples[k];
-                            _out.max_x = (_out.max_x > samples[k]) ? _out.max_x : samples[k];
-                        }
+                        sample = (int)reader.ReadUInt32();
+                        // sample = (int)reader.ReadUInt16();
+                        _out.min_o = (_out.min_o < sample) ? _out.min_o : sample;
+                        _out.max_o = (_out.max_o > sample) ? _out.max_o : sample;
+                        file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
                     }
-                    file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
+                    while (!file_eof); // если возникает ошибка - файл битый
+                    
+                    _out.min_x = _out.min_o;
+                    _out.max_x = _out.max_o;
+
+                    break;
                 }
-                while (!file_eof); // если возникает ошибка - файл битый
             }
             catch (IOException e)
             {
@@ -341,25 +397,25 @@ namespace parus
             if (int_value < 64)
             {
                 // Red to yellow. (255, 0, 0) to (255, 255, 0).
-                return Color.FromArgb(255, int_value, 0);
+                return Color.FromArgb(128, 255, int_value, 0);
             }
             else if (int_value < 128)
             {
                 // Yellow to green. (255, 255, 0) to (0, 255, 0).
                 int_value -= 64;
-                return Color.FromArgb(255 - int_value, 255, 0);
+                return Color.FromArgb(128, 255 - int_value, 255, 0);
             }
             else if (int_value < 192)
             {
                 // Green to aqua. (0, 255, 0) to (0, 255, 255).
                 int_value -= 128;
-                return Color.FromArgb(0, 255, int_value);
+                return Color.FromArgb(128, 0, 255, int_value);
             }
             else
             {
                 // Aqua to blue. (0, 255, 255) to (0, 0, 255).
                 int_value -= 192;
-                return Color.FromArgb(0, 255 - int_value, 255);
+                return Color.FromArgb(128, 0, 255 - int_value, 255);
             }
         }
     }

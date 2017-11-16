@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint2 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 1D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint3 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(2D, 2D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint4 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(3D, 2D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint5 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(4D, 1D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint6 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(5D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint7 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint8 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 1D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint9 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(2D, 2D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint10 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(3D, 2D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint11 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(4D, 1D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint12 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(5D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageIonogram = new System.Windows.Forms.TabPage();
@@ -58,12 +58,16 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelDirectory = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButtonChangeDir = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonRefresh = new System.Windows.Forms.ToolStripButton();
             this.tabControl.SuspendLayout();
             this.tabPageIonogram.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartIonogram)).BeginInit();
             this.panelIonogramFiles.SuspendLayout();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -73,11 +77,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.Controls.Add(this.tabPageIonogram);
             this.tabControl.Controls.Add(this.tabPageParameters);
-            this.tabControl.Location = new System.Drawing.Point(0, 24);
+            this.tabControl.Location = new System.Drawing.Point(0, 52);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.ShowToolTips = true;
-            this.tabControl.Size = new System.Drawing.Size(798, 386);
+            this.tabControl.Size = new System.Drawing.Size(798, 358);
             this.tabControl.TabIndex = 0;
             // 
             // tabPageIonogram
@@ -87,43 +91,43 @@
             this.tabPageIonogram.Location = new System.Drawing.Point(4, 22);
             this.tabPageIonogram.Name = "tabPageIonogram";
             this.tabPageIonogram.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageIonogram.Size = new System.Drawing.Size(790, 360);
+            this.tabPageIonogram.Size = new System.Drawing.Size(790, 332);
             this.tabPageIonogram.TabIndex = 0;
             this.tabPageIonogram.Text = "Ионограмма";
             this.tabPageIonogram.UseVisualStyleBackColor = true;
             // 
             // chartIonogram
             // 
-            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea1.AxisX.Title = "Частота, МГц";
-            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
-            chartArea1.AxisX2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea1.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea1.AxisY.Title = "Действующая высота, км";
-            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
-            chartArea1.AxisY2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea1.Name = "ChartAreaIonogram";
-            this.chartIonogram.ChartAreas.Add(chartArea1);
+            chartArea2.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea2.AxisX.Title = "Частота, МГц";
+            chartArea2.AxisX.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
+            chartArea2.AxisX2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea2.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea2.AxisY.Title = "Действующая высота, км";
+            chartArea2.AxisY.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
+            chartArea2.AxisY2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea2.Name = "ChartAreaIonogram";
+            this.chartIonogram.ChartAreas.Add(chartArea2);
             this.chartIonogram.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartIonogram.Location = new System.Drawing.Point(3, 3);
             this.chartIonogram.Name = "chartIonogram";
-            series1.ChartArea = "ChartAreaIonogram";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
-            series1.Color = System.Drawing.Color.Transparent;
-            series1.Name = "Series1";
-            series1.Points.Add(dataPoint1);
-            series1.Points.Add(dataPoint2);
-            series1.Points.Add(dataPoint3);
-            series1.Points.Add(dataPoint4);
-            series1.Points.Add(dataPoint5);
-            series1.Points.Add(dataPoint6);
-            this.chartIonogram.Series.Add(series1);
-            this.chartIonogram.Size = new System.Drawing.Size(596, 354);
+            series2.ChartArea = "ChartAreaIonogram";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series2.Color = System.Drawing.Color.Transparent;
+            series2.Name = "Series1";
+            series2.Points.Add(dataPoint7);
+            series2.Points.Add(dataPoint8);
+            series2.Points.Add(dataPoint9);
+            series2.Points.Add(dataPoint10);
+            series2.Points.Add(dataPoint11);
+            series2.Points.Add(dataPoint12);
+            this.chartIonogram.Series.Add(series2);
+            this.chartIonogram.Size = new System.Drawing.Size(596, 326);
             this.chartIonogram.TabIndex = 5;
             this.chartIonogram.Text = "chart1";
-            title1.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            title1.Name = "TitleTimeIonogram";
-            this.chartIonogram.Titles.Add(title1);
+            title2.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            title2.Name = "TitleTimeIonogram";
+            this.chartIonogram.Titles.Add(title2);
             this.chartIonogram.Paint += new System.Windows.Forms.PaintEventHandler(this.chartIonogram_Paint);
             // 
             // panelIonogramFiles
@@ -133,7 +137,7 @@
             this.panelIonogramFiles.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelIonogramFiles.Location = new System.Drawing.Point(599, 3);
             this.panelIonogramFiles.Name = "panelIonogramFiles";
-            this.panelIonogramFiles.Size = new System.Drawing.Size(188, 354);
+            this.panelIonogramFiles.Size = new System.Drawing.Size(188, 326);
             this.panelIonogramFiles.TabIndex = 0;
             // 
             // listBoxIonograms
@@ -143,7 +147,7 @@
             this.listBoxIonograms.Location = new System.Drawing.Point(0, 13);
             this.listBoxIonograms.Margin = new System.Windows.Forms.Padding(10);
             this.listBoxIonograms.Name = "listBoxIonograms";
-            this.listBoxIonograms.Size = new System.Drawing.Size(188, 341);
+            this.listBoxIonograms.Size = new System.Drawing.Size(188, 313);
             this.listBoxIonograms.TabIndex = 1;
             this.listBoxIonograms.SelectedValueChanged += new System.EventHandler(this.listBoxIonograms_SelectedValueChanged);
             // 
@@ -163,7 +167,7 @@
             this.tabPageParameters.Location = new System.Drawing.Point(4, 22);
             this.tabPageParameters.Name = "tabPageParameters";
             this.tabPageParameters.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageParameters.Size = new System.Drawing.Size(790, 360);
+            this.tabPageParameters.Size = new System.Drawing.Size(790, 332);
             this.tabPageParameters.TabIndex = 1;
             this.tabPageParameters.Text = "Параметры";
             this.tabPageParameters.UseVisualStyleBackColor = true;
@@ -265,11 +269,45 @@
             this.toolStripStatusLabelDirectory.Size = new System.Drawing.Size(47, 17);
             this.toolStripStatusLabelDirectory.Text = "Папка: ";
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButtonChangeDir,
+            this.toolStripButtonRefresh});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(798, 25);
+            this.toolStrip1.TabIndex = 4;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButtonChangeDir
+            // 
+            this.toolStripButtonChangeDir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonChangeDir.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonChangeDir.Image")));
+            this.toolStripButtonChangeDir.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonChangeDir.Name = "toolStripButtonChangeDir";
+            this.toolStripButtonChangeDir.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonChangeDir.Text = "toolStripButton1";
+            this.toolStripButtonChangeDir.ToolTipText = "Изменить рабочую папку";
+            this.toolStripButtonChangeDir.Click += new System.EventHandler(this.toolStripButtonChangeDir_Click);
+            // 
+            // toolStripButtonRefresh
+            // 
+            this.toolStripButtonRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonRefresh.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRefresh.Image")));
+            this.toolStripButtonRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonRefresh.Name = "toolStripButtonRefresh";
+            this.toolStripButtonRefresh.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonRefresh.Text = "toolStripButton1";
+            this.toolStripButtonRefresh.ToolTipText = "Обновить список файлов в папке";
+            this.toolStripButtonRefresh.Click += new System.EventHandler(this.toolStripButtonRefresh_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(798, 435);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStripMain);
@@ -288,6 +326,8 @@
             this.menuStripMain.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -315,6 +355,9 @@
         private System.Windows.Forms.Panel panelIonogramFiles;
         private System.Windows.Forms.ListBox listBoxIonograms;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton toolStripButtonChangeDir;
+        private System.Windows.Forms.ToolStripButton toolStripButtonRefresh;
     }
 }
 
