@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Xml;
+using System.Diagnostics;
 
 namespace parus
 {
@@ -94,7 +96,15 @@ namespace parus
 
         private void FormMain_Activated(object sender, EventArgs e)
         {
+            string filename = Properties.Settings.Default.settingsXmlConfig;
 
+            if (Properties.Settings.Default.settingsXmlConfig.Length > 0)
+            {
+                richTextBox_XML.LoadFile(filename, RichTextBoxStreamType.PlainText);
+                HighlightColors.HighlightRTF(richTextBox_XML);
+            }
+            else
+                toolStripButtonXmlOpen_Click(sender, e);
         }
 
         private void chartIonogram_Paint(object sender, PaintEventArgs e)
@@ -109,17 +119,11 @@ namespace parus
                     curIonogram = new IonogramReader(ionname);
                 }
 
-                //Point loc = chartIonogram.Location;
-                //Size siz = chartIonogram.Size;
-                //Padding mar = chartIonogram.Margin;
-                //ElementPosition posChart = chartIonogram.ChartAreas[0].InnerPlotPosition;
-                //e.Graphics.DrawImage(curIonogram.Bitmap_O, mar.Left + loc.X + siz.Width * posChart.X/100, mar.Top + loc.Y + siz.Height * posChart.Y/100);
-
                 ChartArea a = chartIonogram.ChartAreas[0];
-                int x1 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Minimum) + a.AxisX.LineWidth;
-                int x2 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Maximum) - a.AxisX.LineWidth;
-                int y1 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Maximum) + a.AxisY.LineWidth;
-                int y2 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Minimum) - a.AxisY.LineWidth;
+                int x1 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Minimum)+a.AxisX.MajorGrid.LineWidth;
+                int x2 = (int)a.AxisX.ValueToPixelPosition(a.AxisX.Maximum)+2 * a.AxisX.MajorGrid.LineWidth;
+                int y1 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Maximum)+a.AxisY.MajorGrid.LineWidth;
+                int y2 = (int)a.AxisY.ValueToPixelPosition(a.AxisY.Minimum)+2 * a.AxisY.MajorGrid.LineWidth;
 
                 e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 if (curIonogram.Bitmap_O != null)
@@ -164,6 +168,90 @@ namespace parus
 
             // Попробуем поменять путь
             fill_listboxIonograms(curDir);
+        }
+
+        private void chartIonogram_MouseMove(object sender, MouseEventArgs e)
+        {
+            var ca = sender as Chart;
+
+            // If the mouse isn't on the plotting area, a datapoint, or gridline then exit
+            HitTestResult htr = ca.HitTest(e.X, e.Y);
+            if (htr.ChartElementType != ChartElementType.PlottingArea && htr.ChartElementType != ChartElementType.DataPoint && htr.ChartElementType != ChartElementType.Gridlines)
+                return;
+
+            double xCoord = ca.ChartAreas["ChartAreaIonogram"].AxisX.PixelPositionToValue(e.X);
+            double yCoord = ca.ChartAreas["ChartAreaIonogram"].AxisY.PixelPositionToValue(e.Y);
+
+            toolStripStatusLabelPolnt.Text = "Точка: f = " + Math.Round(xCoord, 2).ToString() + " кГц, h' = " + Math.Round(yCoord, 2).ToString() + " км";
+        }
+
+        private void toolStripButtonXmlOpen_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Filter = "Файл конфигурации (*.xml)|*.xml|Все файлы (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            string filename = openFileDialog.FileName;
+
+            richTextBox_XML.LoadFile(filename, RichTextBoxStreamType.PlainText);
+            HighlightColors.HighlightRTF(richTextBox_XML);
+
+            Properties.Settings.Default.settingsXmlConfig = filename;
+            Properties.Settings.Default.Save();
+        }
+
+        private void toolStripButtonXmlSave_Click(object sender, EventArgs e)
+        {
+            richTextBox_XML.SaveFile(Properties.Settings.Default.settingsXmlConfig, RichTextBoxStreamType.PlainText);
+        }
+
+        private void toolStripMenuExternal_Click(object sender, EventArgs e)
+        {
+            FormExternal fe = new FormExternal();
+            fe.Show();
+        }
+
+        private void toolStripButtonExternal_Click(object sender, EventArgs e)
+        {
+            string filename = "";
+            int waitTime = 30000;
+
+            var bt = sender as ToolStripButton;
+            switch (Convert.ToInt32(bt.Tag))
+            {
+                case 0:
+                    filename = Properties.Settings.Default.settinsExternal_Ionogram;
+                    //waitTime = 1000 * (curIonogram.Header.count_freq /* * на количество импульсов усреднения */ + 1) / 50.; // в миллисекундах
+                    break;
+                case 1:
+                    filename = Properties.Settings.Default.settinsExternal_Amplitudes;
+                    break;
+                case 2:
+                    filename = Properties.Settings.Default.settinsExternal_Calibration;
+                    break;
+            }
+
+            Process iStartProcess = new Process(); // новый процесс
+            iStartProcess.StartInfo.FileName = filename; // путь к запускаемому файлу
+            iStartProcess.StartInfo.Arguments = Properties.Settings.Default.settingsXmlConfig; // эта строка указывается, если программа запускается с параметрами
+            //iStartProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; // эту строку указываем, если хотим запустить программу в скрытом виде
+            iStartProcess.Start(); // запускаем программу
+            iStartProcess.WaitForExit(waitTime); // эту строку указываем, если нам надо будет ждать завершения программы определённое время, пример: 2 мин. (указано в миллисекундах - 2 мин. * 60 сек. * 1000 м.сек.)
+            iStartProcess.Kill();
+
+            // Изменим текущую папку просмотра результатов измерений
+            switch (Convert.ToInt32(bt.Tag))
+            {
+                case 0:
+                    fill_listboxIonograms(Path.GetDirectoryName(filename));
+                    break;
+                case 1:
+                    //
+                    break;
+                case 2:
+                    //
+                    break;
+            }
         }
 
     }

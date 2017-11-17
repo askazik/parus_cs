@@ -34,5 +34,53 @@ namespace parus.Properties {
                 this["settingsWorkingDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string settingsXmlConfig {
+            get {
+                return ((string)(this["settingsXmlConfig"]));
+            }
+            set {
+                this["settingsXmlConfig"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string settinsExternal_Ionogram {
+            get {
+                return ((string)(this["settinsExternal_Ionogram"]));
+            }
+            set {
+                this["settinsExternal_Ionogram"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string settinsExternal_Amplitudes {
+            get {
+                return ((string)(this["settinsExternal_Amplitudes"]));
+            }
+            set {
+                this["settinsExternal_Amplitudes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string settinsExternal_Calibration {
+            get {
+                return ((string)(this["settinsExternal_Calibration"]));
+            }
+            set {
+                this["settinsExternal_Calibration"] = value;
+            }
+        }
     }
 }

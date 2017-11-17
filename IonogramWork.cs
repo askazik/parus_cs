@@ -16,6 +16,7 @@ namespace parus
         public int max_o;
         public int max_x;
         public bool read_error;
+        public uint[] values;
     } // contentInfo
 
     // Структура заголовка файла ионограммы.
@@ -126,7 +127,7 @@ namespace parus
                                 (int)_header.count_height,
                                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                             fillDirtyImage(reader);
-                            _image_x = new Bitmap(_image_o); // дублируем рисунок
+                            //_image_x = new Bitmap(_image_o); // дублируем рисунок
                             break;
                         default:
                             throw new ArgumentOutOfRangeException("Неизвестная версия формата файла ионограмм.");
@@ -295,6 +296,9 @@ namespace parus
         protected contentInfo getContentInfo(BinaryReader reader)
         {
             contentInfo _out;
+            int i, k;
+            byte[] samples;
+
             _out.min_o = 255;
             _out.min_x = 255;
             _out.max_o = 0;
@@ -319,8 +323,6 @@ namespace parus
                     // Пробегаем по данным.
                     FrequencyData curFrq;
                     SignalResponse curSignal;
-                    int i, k;
-                    byte[] samples;
 
                     // пока не достигнут конец файла считываем каждое значение из файла
 
@@ -353,21 +355,23 @@ namespace parus
                     break;
 
                     case 1: // грязная ионограмма
-                    
+
+                    // превести uint к ushort и вместо 4х поставить 2
+                    int BufferSize = (int)this._header.count_height * (int)this._header.count_freq;
+                    uint[] hugeUIntArray = new uint[BufferSize];               
+                    samples = reader.ReadBytes(4 * BufferSize);
+                    Buffer.BlockCopy(samples, 0, hugeUIntArray, 0, 4 * BufferSize);
+
                     int sample;
-                    // пока не достигнут конец файла считываем каждое значение из файла
-                    do
+                    for (i = 0; i < BufferSize; i++)
                     {
-                        sample = (int)reader.ReadUInt32();
-                        // sample = (int)reader.ReadUInt16();
+                        sample = (int)hugeUIntArray[i];
                         _out.min_o = (_out.min_o < sample) ? _out.min_o : sample;
                         _out.max_o = (_out.max_o > sample) ? _out.max_o : sample;
-                        file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
                     }
-                    while (!file_eof); // если возникает ошибка - файл битый
-                    
                     _out.min_x = _out.min_o;
                     _out.max_x = _out.max_o;
+                    _out.values = hugeUIntArray;
 
                     break;
                 }
