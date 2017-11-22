@@ -16,7 +16,7 @@ namespace parus
         public int max_o;
         public int max_x;
         public bool read_error;
-        public uint[] values;
+        public ushort[] values;
     } // contentInfo
 
     // Структура заголовка файла ионограммы.
@@ -241,25 +241,15 @@ namespace parus
             // ushort sample;
             Color cl;
 
-            // пока не достигнут конец файла считываем каждое значение из файла
-            bool file_eof;
-            i = 0;
             try
             {
-                do
-                {
+                for (i = 0; i < _header.count_freq; i++)
                     for (j = 0; j < _header.count_height; j++)
                     {
-                        sample = reader.ReadUInt32();
-                        // sample = reader.ReadUInt16();
+                        sample = _contentInfo.values[i * _header.count_height+j];
                         cl = MapRainbowColor(sample, _contentInfo.max_o, _contentInfo.min_o);
                         _image_o.SetPixel(i, (int)_header.count_height - 1 - j, cl);
                     }
-
-                    i++;
-                    file_eof = reader.BaseStream.Position >= reader.BaseStream.Length;
-                }
-                while (!file_eof); // если возникает ошибка - файл битый
             }
             catch (IOException e)
             {
@@ -298,12 +288,16 @@ namespace parus
             contentInfo _out;
             int i, k;
             byte[] samples;
+            ushort[] hugeUShortArray = null;
 
+            // Инициализация
             _out.min_o = 255;
             _out.min_x = 255;
             _out.max_o = 0;
             _out.max_x = 0;
             _out.read_error = false;
+            _out.values = hugeUShortArray;
+
             // Сохраним положение в файле.
             long oldPos = reader.BaseStream.Position;
 
@@ -315,6 +309,9 @@ namespace parus
                     _header = readHeader2(reader);
                 else
                     throw new ArgumentOutOfRangeException("Неизвестная версия формата файла ионограмм.");
+
+                int BufferSize = (int)this._header.count_height * (int)this._header.count_freq;
+                hugeUShortArray = new ushort[BufferSize];
                     
                 bool file_eof = false;
                 switch(_ver) 
@@ -356,22 +353,20 @@ namespace parus
 
                     case 1: // грязная ионограмма
 
-                    // превести uint к ushort и вместо 4х поставить 2
-                    int BufferSize = (int)this._header.count_height * (int)this._header.count_freq;
-                    uint[] hugeUIntArray = new uint[BufferSize];               
-                    samples = reader.ReadBytes(4 * BufferSize);
-                    Buffer.BlockCopy(samples, 0, hugeUIntArray, 0, 4 * BufferSize);
+                    // превести uint к ushort и вместо 4х поставить 2              
+                    samples = reader.ReadBytes(2 * BufferSize);
+                    Buffer.BlockCopy(samples, 0, hugeUShortArray, 0, 2 * BufferSize);
 
-                    int sample;
+                    ushort sample;
                     for (i = 0; i < BufferSize; i++)
                     {
-                        sample = (int)hugeUIntArray[i];
+                        sample = hugeUShortArray[i];
                         _out.min_o = (_out.min_o < sample) ? _out.min_o : sample;
                         _out.max_o = (_out.max_o > sample) ? _out.max_o : sample;
                     }
                     _out.min_x = _out.min_o;
                     _out.max_x = _out.max_o;
-                    _out.values = hugeUIntArray;
+                    _out.values = hugeUShortArray;
 
                     break;
                 }

@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint13 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint14 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 1D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint15 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(2D, 2D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint16 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(3D, 2D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint17 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(4D, 1D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint18 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(5D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint2 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 1D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint3 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(2D, 2D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint4 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(3D, 2D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint5 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(4D, 1D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint6 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(5D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageIonogram = new System.Windows.Forms.TabPage();
@@ -117,38 +117,38 @@
             // 
             // chartIonogram
             // 
-            chartArea3.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea3.AxisX.Title = "Частота, МГц";
-            chartArea3.AxisX.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
-            chartArea3.AxisX.ToolTip = "wertyu";
-            chartArea3.AxisX2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea3.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea3.AxisY.Title = "Действующая высота, км";
-            chartArea3.AxisY.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
-            chartArea3.AxisY2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea3.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea3.Name = "ChartAreaIonogram";
-            this.chartIonogram.ChartAreas.Add(chartArea3);
+            chartArea1.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisX.Title = "Частота, МГц";
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
+            chartArea1.AxisX.ToolTip = "wertyu";
+            chartArea1.AxisX2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisY.Title = "Действующая высота, км";
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Times New Roman", 12F);
+            chartArea1.AxisY2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea1.Name = "ChartAreaIonogram";
+            this.chartIonogram.ChartAreas.Add(chartArea1);
             this.chartIonogram.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartIonogram.Location = new System.Drawing.Point(3, 3);
             this.chartIonogram.Name = "chartIonogram";
-            series3.ChartArea = "ChartAreaIonogram";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
-            series3.Color = System.Drawing.Color.Transparent;
-            series3.Name = "Series1";
-            series3.Points.Add(dataPoint13);
-            series3.Points.Add(dataPoint14);
-            series3.Points.Add(dataPoint15);
-            series3.Points.Add(dataPoint16);
-            series3.Points.Add(dataPoint17);
-            series3.Points.Add(dataPoint18);
-            this.chartIonogram.Series.Add(series3);
+            series1.ChartArea = "ChartAreaIonogram";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series1.Color = System.Drawing.Color.Transparent;
+            series1.Name = "Series1";
+            series1.Points.Add(dataPoint1);
+            series1.Points.Add(dataPoint2);
+            series1.Points.Add(dataPoint3);
+            series1.Points.Add(dataPoint4);
+            series1.Points.Add(dataPoint5);
+            series1.Points.Add(dataPoint6);
+            this.chartIonogram.Series.Add(series1);
             this.chartIonogram.Size = new System.Drawing.Size(596, 326);
             this.chartIonogram.TabIndex = 5;
             this.chartIonogram.Text = "chart1";
-            title3.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            title3.Name = "TitleTimeIonogram";
-            this.chartIonogram.Titles.Add(title3);
+            title1.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            title1.Name = "TitleTimeIonogram";
+            this.chartIonogram.Titles.Add(title1);
             this.chartIonogram.Paint += new System.Windows.Forms.PaintEventHandler(this.chartIonogram_Paint);
             this.chartIonogram.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chartIonogram_MouseMove);
             // 
@@ -287,44 +287,44 @@
             this.toolStripSeparator2,
             this.toolStripMenuItemExit});
             this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
-            this.toolStripMenuItemFile.Size = new System.Drawing.Size(48, 20);
+            this.toolStripMenuItemFile.Size = new System.Drawing.Size(45, 20);
             this.toolStripMenuItemFile.Text = "Файл";
             // 
             // toolStripMenuItemOpenFile
             // 
             this.toolStripMenuItemOpenFile.Name = "toolStripMenuItemOpenFile";
-            this.toolStripMenuItemOpenFile.Size = new System.Drawing.Size(194, 22);
+            this.toolStripMenuItemOpenFile.Size = new System.Drawing.Size(187, 22);
             this.toolStripMenuItemOpenFile.Text = "Открыть файл...";
             this.toolStripMenuItemOpenFile.Click += new System.EventHandler(this.toolStripMenuItemOpenFile_Click);
             // 
             // toolStripMenuItemOpenDir
             // 
             this.toolStripMenuItemOpenDir.Name = "toolStripMenuItemOpenDir";
-            this.toolStripMenuItemOpenDir.Size = new System.Drawing.Size(194, 22);
+            this.toolStripMenuItemOpenDir.Size = new System.Drawing.Size(187, 22);
             this.toolStripMenuItemOpenDir.Text = "Рабочая папка...";
             this.toolStripMenuItemOpenDir.Click += new System.EventHandler(this.toolStripMenuItemOpenDir_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(191, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(184, 6);
             // 
             // toolStripMenuExternal
             // 
             this.toolStripMenuExternal.Name = "toolStripMenuExternal";
-            this.toolStripMenuExternal.Size = new System.Drawing.Size(194, 22);
+            this.toolStripMenuExternal.Size = new System.Drawing.Size(187, 22);
             this.toolStripMenuExternal.Text = "Внешние программы";
             this.toolStripMenuExternal.Click += new System.EventHandler(this.toolStripMenuExternal_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(191, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(184, 6);
             // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
-            this.toolStripMenuItemExit.Size = new System.Drawing.Size(194, 22);
+            this.toolStripMenuItemExit.Size = new System.Drawing.Size(187, 22);
             this.toolStripMenuItemExit.Text = "Выход";
             this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
             // 
@@ -334,20 +334,20 @@
             this.toolStripMenuItemHelpContent,
             this.toolStripMenuItemHelpAbout});
             this.toolStripMenuItemHelp.Name = "toolStripMenuItemHelp";
-            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(65, 20);
+            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(62, 20);
             this.toolStripMenuItemHelp.Text = "Справка";
             // 
             // toolStripMenuItemHelpContent
             // 
             this.toolStripMenuItemHelpContent.Name = "toolStripMenuItemHelpContent";
             this.toolStripMenuItemHelpContent.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.toolStripMenuItemHelpContent.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItemHelpContent.Size = new System.Drawing.Size(168, 22);
             this.toolStripMenuItemHelpContent.Text = "Содержание";
             // 
             // toolStripMenuItemHelpAbout
             // 
             this.toolStripMenuItemHelpAbout.Name = "toolStripMenuItemHelpAbout";
-            this.toolStripMenuItemHelpAbout.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItemHelpAbout.Size = new System.Drawing.Size(168, 22);
             this.toolStripMenuItemHelpAbout.Text = "О программе";
             this.toolStripMenuItemHelpAbout.Click += new System.EventHandler(this.toolStripMenuItemHelpAbout_Click);
             // 
@@ -359,16 +359,15 @@
             // 
             this.openFileDialog.Filter = "Ионограммы (*.ion)|*.ion|Амплитуды (*.frq)|*.frq|Все файлы (*.*)|*.*";
             this.openFileDialog.Title = "Открыть файл";
-            this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog_FileOk);
             // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelDirectory,
             this.toolStripStatusLabelPolnt});
-            this.statusStrip.Location = new System.Drawing.Point(0, 411);
+            this.statusStrip.Location = new System.Drawing.Point(0, 413);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(798, 24);
+            this.statusStrip.Size = new System.Drawing.Size(798, 22);
             this.statusStrip.TabIndex = 3;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -376,14 +375,14 @@
             // 
             this.toolStripStatusLabelDirectory.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
             this.toolStripStatusLabelDirectory.Name = "toolStripStatusLabelDirectory";
-            this.toolStripStatusLabelDirectory.Size = new System.Drawing.Size(51, 19);
+            this.toolStripStatusLabelDirectory.Size = new System.Drawing.Size(49, 17);
             this.toolStripStatusLabelDirectory.Text = "Папка: ";
             // 
             // toolStripStatusLabelPolnt
             // 
             this.toolStripStatusLabelPolnt.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
             this.toolStripStatusLabelPolnt.Name = "toolStripStatusLabelPolnt";
-            this.toolStripStatusLabelPolnt.Size = new System.Drawing.Size(50, 19);
+            this.toolStripStatusLabelPolnt.Size = new System.Drawing.Size(48, 17);
             this.toolStripStatusLabelPolnt.Text = "Точка: ";
             // 
             // toolStrip1
@@ -474,7 +473,6 @@
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "FormMain";
             this.Text = "Интерфейс к ионозонду \"Парус\" НИИФ ЮФУ";
-            this.Activated += new System.EventHandler(this.FormMain_Activated);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.tabControl.ResumeLayout(false);
             this.tabPageIonogram.ResumeLayout(false);

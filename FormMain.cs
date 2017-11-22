@@ -83,28 +83,10 @@ namespace parus
             openFileDialog.ShowDialog();
         }
 
-        private void openFileDialog_FileOk(object sender, CancelEventArgs e)
-        {
-
-        }
-
         private void toolStripMenuItemHelpAbout_Click(object sender, EventArgs e)
         {
             AboutBox ab = new AboutBox();
             ab.Show();
-        }
-
-        private void FormMain_Activated(object sender, EventArgs e)
-        {
-            string filename = Properties.Settings.Default.settingsXmlConfig;
-
-            if (Properties.Settings.Default.settingsXmlConfig.Length > 0)
-            {
-                richTextBox_XML.LoadFile(filename, RichTextBoxStreamType.PlainText);
-                HighlightColors.HighlightRTF(richTextBox_XML);
-            }
-            else
-                toolStripButtonXmlOpen_Click(sender, e);
         }
 
         private void chartIonogram_Paint(object sender, PaintEventArgs e)
@@ -155,6 +137,15 @@ namespace parus
             string curDir = Properties.Settings.Default.settingsWorkingDirectory;
             if (Directory.Exists(curDir))
                 fill_listboxIonograms(curDir); // попробуем заполнить список ионограмм
+
+            string filename = Properties.Settings.Default.settingsXmlConfig;
+            if (Properties.Settings.Default.settingsXmlConfig.Length > 0)
+            {
+                richTextBox_XML.LoadFile(filename, RichTextBoxStreamType.PlainText);
+                HighlightColors.HighlightRTF(richTextBox_XML);
+            }
+            else
+                toolStripButtonXmlOpen_Click(sender, e);
         }
 
         private void toolStripButtonChangeDir_Click(object sender, EventArgs e)
@@ -214,14 +205,14 @@ namespace parus
         private void toolStripButtonExternal_Click(object sender, EventArgs e)
         {
             string filename = "";
-            int waitTime = 30000;
+            int waitTime = 60000;
 
             var bt = sender as ToolStripButton;
             switch (Convert.ToInt32(bt.Tag))
             {
                 case 0:
                     filename = Properties.Settings.Default.settinsExternal_Ionogram;
-                    //waitTime = 1000 * (curIonogram.Header.count_freq /* * на количество импульсов усреднения */ + 1) / 50.; // в миллисекундах
+                    //waitTime = 1000 * (curIonogram.Header.count_freq * curIonogram.Header./* * на количество импульсов усреднения */ + 1) / 50.; // в миллисекундах
                     break;
                 case 1:
                     filename = Properties.Settings.Default.settinsExternal_Amplitudes;
@@ -233,11 +224,12 @@ namespace parus
 
             Process iStartProcess = new Process(); // новый процесс
             iStartProcess.StartInfo.FileName = filename; // путь к запускаемому файлу
-            iStartProcess.StartInfo.Arguments = Properties.Settings.Default.settingsXmlConfig; // эта строка указывается, если программа запускается с параметрами
+            //iStartProcess.StartInfo.Arguments = Properties.Settings.Default.settingsXmlConfig; // эта строка указывается, если программа запускается с параметрами
             //iStartProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; // эту строку указываем, если хотим запустить программу в скрытом виде
             iStartProcess.Start(); // запускаем программу
             iStartProcess.WaitForExit(waitTime); // эту строку указываем, если нам надо будет ждать завершения программы определённое время, пример: 2 мин. (указано в миллисекундах - 2 мин. * 60 сек. * 1000 м.сек.)
-            iStartProcess.Kill();
+            iStartProcess.Close();
+            //iStartProcess.Kill();
 
             // Изменим текущую папку просмотра результатов измерений
             switch (Convert.ToInt32(bt.Tag))
