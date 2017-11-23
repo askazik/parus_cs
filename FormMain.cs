@@ -184,7 +184,7 @@ namespace parus
             // получаем выбранный файл
             string filename = openFileDialog.FileName;
 
-            richTextBox_XML.LoadFile(filename, RichTextBoxStreamType.PlainText);
+            richTextBox_XML.LoadFile(filename,RichTextBoxStreamType.UnicodePlainText);
             HighlightColors.HighlightRTF(richTextBox_XML);
 
             Properties.Settings.Default.settingsXmlConfig = filename;
@@ -193,7 +193,7 @@ namespace parus
 
         private void toolStripButtonXmlSave_Click(object sender, EventArgs e)
         {
-            richTextBox_XML.SaveFile(Properties.Settings.Default.settingsXmlConfig, RichTextBoxStreamType.PlainText);
+            richTextBox_XML.SaveFile(Properties.Settings.Default.settingsXmlConfig, RichTextBoxStreamType.UnicodePlainText);
         }
 
         private void toolStripMenuExternal_Click(object sender, EventArgs e)
@@ -205,31 +205,35 @@ namespace parus
         private void toolStripButtonExternal_Click(object sender, EventArgs e)
         {
             string filename = "";
-            int waitTime = 60000;
+
+            int waitTime = 0;
+            XMLConfig xml = new XMLConfig();
+            xml.Load(Properties.Settings.Default.settingsXmlConfig);
 
             var bt = sender as ToolStripButton;
             switch (Convert.ToInt32(bt.Tag))
             {
                 case 0:
                     filename = Properties.Settings.Default.settinsExternal_Ionogram;
-                    //waitTime = 1000 * (curIonogram.Header.count_freq * curIonogram.Header./* * на количество импульсов усреднения */ + 1) / 50.; // в миллисекундах
+                    waitTime = xml.getMeasuringTime(Measuring.ionogram);
                     break;
                 case 1:
                     filename = Properties.Settings.Default.settinsExternal_Amplitudes;
+                    waitTime = xml.getMeasuringTime(Measuring.amplitudes);
                     break;
                 case 2:
                     filename = Properties.Settings.Default.settinsExternal_Calibration;
+                    waitTime = xml.getMeasuringTime(Measuring.ionogram);
                     break;
             }
 
             Process iStartProcess = new Process(); // новый процесс
             iStartProcess.StartInfo.FileName = filename; // путь к запускаемому файлу
-            //iStartProcess.StartInfo.Arguments = Properties.Settings.Default.settingsXmlConfig; // эта строка указывается, если программа запускается с параметрами
-            //iStartProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; // эту строку указываем, если хотим запустить программу в скрытом виде
+            iStartProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename);
+            iStartProcess.StartInfo.UseShellExecute = false;
             iStartProcess.Start(); // запускаем программу
             iStartProcess.WaitForExit(waitTime); // эту строку указываем, если нам надо будет ждать завершения программы определённое время, пример: 2 мин. (указано в миллисекундах - 2 мин. * 60 сек. * 1000 м.сек.)
             iStartProcess.Close();
-            //iStartProcess.Kill();
 
             // Изменим текущую папку просмотра результатов измерений
             switch (Convert.ToInt32(bt.Tag))

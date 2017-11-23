@@ -1,10 +1,71 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;   
+using System.Windows.Forms;
+using System.Xml;
 
 
 namespace parus
 {
+    // Перичисление доступных экспериментов
+    public enum Measuring : int { ionogram, amplitudes }
+
+    // Парсинг XML файла
+    public class XMLConfig : XmlDocument
+    {
+        public int getMeasuringTime(Measuring mes)
+        {
+            int time = 0; // ms
+            string s_attr = "";
+
+            switch(mes)
+            {
+                case Measuring.amplitudes:
+                    s_attr = "amplitudes";
+                    break;
+                case Measuring.ionogram:
+                    s_attr = "ionogram";
+                    break;
+            }
+                    
+            // получим корневой элемент
+            XmlElement xRoot = DocumentElement;
+ 
+            // время для одного блока зондирования
+            foreach(XmlNode xnode in xRoot)
+            {
+                // находим атрибут name
+                if (xnode.NodeType == XmlNodeType.Element && xnode.Attributes.Count > 0)
+                {
+                    XmlNode attr = xnode.Attributes.GetNamedItem("name");
+                    if (attr != null & attr.Value == s_attr)
+                    {
+                        XmlNode header_node = xnode["header"];
+                        time = 1000 * Convert.ToInt32(header_node["pulse_count"].InnerText) / Convert.ToInt32(header_node["pulse_frq"].InnerText);
+
+                        if (mes == Measuring.amplitudes) // умножим время измерения строки на количество частот
+                        {
+                            // нужно еще умножить на количество блоков !!!!!
+                            int count = Convert.ToInt32(header_node["modules_count"].InnerText);
+                            time *= count;
+                        }
+
+                        if (mes == Measuring.ionogram) // умножим время измерения строки на количество частот
+                        {
+                            XmlNode module = xnode["module"];
+                            int fbeg = Convert.ToInt32(module["fbeg"].InnerText);
+                            int fend = Convert.ToInt32(module["fend"].InnerText);
+                            int fstep = Convert.ToInt32(module["fstep"].InnerText);
+                            int count = 1 + (fend - fbeg) / fstep;
+                            time *= count;
+                        }
+                    }
+                }
+            }
+
+            return time;
+        }
+    }
+
     // Раскраска XML текста
     public class HighlightColors
     {

@@ -287,44 +287,44 @@
             this.toolStripSeparator2,
             this.toolStripMenuItemExit});
             this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
-            this.toolStripMenuItemFile.Size = new System.Drawing.Size(45, 20);
+            this.toolStripMenuItemFile.Size = new System.Drawing.Size(48, 20);
             this.toolStripMenuItemFile.Text = "Файл";
             // 
             // toolStripMenuItemOpenFile
             // 
             this.toolStripMenuItemOpenFile.Name = "toolStripMenuItemOpenFile";
-            this.toolStripMenuItemOpenFile.Size = new System.Drawing.Size(187, 22);
+            this.toolStripMenuItemOpenFile.Size = new System.Drawing.Size(194, 22);
             this.toolStripMenuItemOpenFile.Text = "Открыть файл...";
             this.toolStripMenuItemOpenFile.Click += new System.EventHandler(this.toolStripMenuItemOpenFile_Click);
             // 
             // toolStripMenuItemOpenDir
             // 
             this.toolStripMenuItemOpenDir.Name = "toolStripMenuItemOpenDir";
-            this.toolStripMenuItemOpenDir.Size = new System.Drawing.Size(187, 22);
+            this.toolStripMenuItemOpenDir.Size = new System.Drawing.Size(194, 22);
             this.toolStripMenuItemOpenDir.Text = "Рабочая папка...";
             this.toolStripMenuItemOpenDir.Click += new System.EventHandler(this.toolStripMenuItemOpenDir_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(184, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(191, 6);
             // 
             // toolStripMenuExternal
             // 
             this.toolStripMenuExternal.Name = "toolStripMenuExternal";
-            this.toolStripMenuExternal.Size = new System.Drawing.Size(187, 22);
+            this.toolStripMenuExternal.Size = new System.Drawing.Size(194, 22);
             this.toolStripMenuExternal.Text = "Внешние программы";
             this.toolStripMenuExternal.Click += new System.EventHandler(this.toolStripMenuExternal_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(184, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(191, 6);
             // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
-            this.toolStripMenuItemExit.Size = new System.Drawing.Size(187, 22);
+            this.toolStripMenuItemExit.Size = new System.Drawing.Size(194, 22);
             this.toolStripMenuItemExit.Text = "Выход";
             this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
             // 
@@ -334,20 +334,20 @@
             this.toolStripMenuItemHelpContent,
             this.toolStripMenuItemHelpAbout});
             this.toolStripMenuItemHelp.Name = "toolStripMenuItemHelp";
-            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(62, 20);
+            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(65, 20);
             this.toolStripMenuItemHelp.Text = "Справка";
             // 
             // toolStripMenuItemHelpContent
             // 
             this.toolStripMenuItemHelpContent.Name = "toolStripMenuItemHelpContent";
             this.toolStripMenuItemHelpContent.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.toolStripMenuItemHelpContent.Size = new System.Drawing.Size(168, 22);
+            this.toolStripMenuItemHelpContent.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemHelpContent.Text = "Содержание";
             // 
             // toolStripMenuItemHelpAbout
             // 
             this.toolStripMenuItemHelpAbout.Name = "toolStripMenuItemHelpAbout";
-            this.toolStripMenuItemHelpAbout.Size = new System.Drawing.Size(168, 22);
+            this.toolStripMenuItemHelpAbout.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemHelpAbout.Text = "О программе";
             this.toolStripMenuItemHelpAbout.Click += new System.EventHandler(this.toolStripMenuItemHelpAbout_Click);
             // 
@@ -365,9 +365,9 @@
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelDirectory,
             this.toolStripStatusLabelPolnt});
-            this.statusStrip.Location = new System.Drawing.Point(0, 413);
+            this.statusStrip.Location = new System.Drawing.Point(0, 411);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(798, 22);
+            this.statusStrip.Size = new System.Drawing.Size(798, 24);
             this.statusStrip.TabIndex = 3;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -375,14 +375,14 @@
             // 
             this.toolStripStatusLabelDirectory.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
             this.toolStripStatusLabelDirectory.Name = "toolStripStatusLabelDirectory";
-            this.toolStripStatusLabelDirectory.Size = new System.Drawing.Size(49, 17);
+            this.toolStripStatusLabelDirectory.Size = new System.Drawing.Size(51, 19);
             this.toolStripStatusLabelDirectory.Text = "Папка: ";
             // 
             // toolStripStatusLabelPolnt
             // 
             this.toolStripStatusLabelPolnt.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
             this.toolStripStatusLabelPolnt.Name = "toolStripStatusLabelPolnt";
-            this.toolStripStatusLabelPolnt.Size = new System.Drawing.Size(48, 17);
+            this.toolStripStatusLabelPolnt.Size = new System.Drawing.Size(50, 19);
             this.toolStripStatusLabelPolnt.Text = "Точка: ";
             // 
             // toolStrip1
