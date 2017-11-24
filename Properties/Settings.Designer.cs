@@ -82,5 +82,17 @@ namespace parus.Properties {
                 this["settinsExternal_Calibration"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string settingsCronConfig {
+            get {
+                return ((string)(this["settingsCronConfig"]));
+            }
+            set {
+                this["settingsCronConfig"] = value;
+            }
+        }
     }
 }

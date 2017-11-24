@@ -250,5 +250,24 @@ namespace parus
             }
         }
 
+        private void toolStripButtonCronTabOpen_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Filter = "Файл конфигурации Cron (*.tab)|*.tab|Все файлы (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            string filename = openFileDialog.FileName;
+
+            richTextBox_tab.LoadFile(filename, RichTextBoxStreamType.PlainText);
+
+            Properties.Settings.Default.settingsCronConfig = filename;
+            Properties.Settings.Default.Save();
+        }
+
+        private void toolStripButtonCronTabSave_Click(object sender, EventArgs e)
+        {
+            richTextBox_tab.SaveFile(Properties.Settings.Default.settingsCronConfig, RichTextBoxStreamType.PlainText);
+        }
+
     }
 }
